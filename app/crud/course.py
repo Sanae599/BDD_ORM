@@ -1,6 +1,6 @@
 from datetime import datetime
 from sqlmodel import Session, select
-from models.course import CourseStatutEnum, Course
+from app.models.course import CourseStatutEnum, Course
 
 def create_one_course(session: Session):
     course = Course(
