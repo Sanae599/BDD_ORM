@@ -2,7 +2,7 @@ from datetime import datetime
 from typing import Dict, Optional
 from sqlmodel import Field, SQLModel, create_engine, Column, JSON, Relationship
 from enum import Enum
-from room import Room
+from models.room import Room
 
 class CourseStatutEnum(str, Enum):
     OPEN = "OPEN"
@@ -22,7 +22,4 @@ class Course(SQLModel, table=True):
 
     room: Room | None = Relationship(back_populates="room")
 
-sqlite_file_name = "database.db"
-sqlite_url = f"sqlite:///{sqlite_file_name}"
-engine = create_engine(sqlite_url, echo=True)
-SQLModel.metadata.create_all(engine)
+
