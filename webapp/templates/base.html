@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8" />
+    <title>{% block title %}Mon App{% endblock %}</title>
+</head>
+<body>
+    <nav>
+        {% if current_user.is_authenticated %}
+            <p>Bienvenue {{ current_user.firstname }}!</p>
+            <a href="{{ url_for('user.logout') }}">Se déconnecter</a>
+        {% else %}
+            <a href="{{ url_for('user.login') }}">Se connecter</a>
+        {% endif %}
+    </nav>
+
+    <hr />
+
+    {% block content %}
+    {% endblock %}
+</body>
+</html>
