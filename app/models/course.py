@@ -2,7 +2,7 @@ from datetime import datetime
 from typing import Dict, Optional
 from sqlmodel import Field, SQLModel, create_engine, Column, JSON, Relationship
 from enum import Enum
-from models.room import Room
+from room import Room
 
 class CourseStatutEnum(str, Enum):
     OPEN = "OPEN"
@@ -11,7 +11,7 @@ class CourseStatutEnum(str, Enum):
 
 class Course(SQLModel, table=True):
     Id_course: Optional[int] = Field(default=None, primary_key=True)
-    titre: str = Field(max_length=100)
+    title: str = Field(max_length=100)
     description: Optional[str] = None
     start_date: datetime
     end_date: datetime

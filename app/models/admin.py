@@ -1,5 +1,4 @@
 from datetime import date
-from typing import Dict, Optional
 from sqlmodel import SQLModel, Field, Relationship
 from user import UserBase
 from enum import Enum
