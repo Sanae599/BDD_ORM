@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8" />
+    <title>{% block title %}Titre par défaut{% endblock %}</title>
+</head>
+<body>
+    {% comment %} <nav>Menu de navigation ici</nav> {% endcomment %}
+    <nav>
+        {% if current_user.is_authenticated %}
+            <p>Bienvenue {{ current_user.firstname }}!</p>
+            <a href="{{ url_for('user.logout') }}">Se déconnecter</a>
+        {% else %}
+            <a href="{{ url_for('user.login') }}">Se connecter</a>
+        {% endif %}
+    </nav>
+
+    <hr />
+
+    <main>
+        {% block content %}{% endblock %}
+    </main>
+    <footer>Pied de page</footer>
+</body>
+</html>
