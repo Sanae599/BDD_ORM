@@ -1,9 +1,9 @@
-from app.models.user import UserBase, Role
+from app.models.user import User, Role
 from sqlmodel import Session
 
 
 def add_one_user(session: Session):
-    user = UserBase(
+    user = User(
         firstname="Rémi",
         lastname="LABONNE",
         email="remilabonne@yahoo.fr",

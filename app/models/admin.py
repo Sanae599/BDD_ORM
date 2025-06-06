@@ -1,12 +1,11 @@
 from datetime import date
 from sqlmodel import SQLModel, Field, Relationship
-from user import UserBase
+from typing import Optional
 from enum import Enum
 
 class NiveauAccesEnum(str, Enum):
     ADMIN_STANDARD = "Admin standard"
     SUPERADMIN = "Super admin"
-
 
 class Admin(SQLModel, table=True):
     Id_admin: int | None = Field(default=None, primary_key=True)
@@ -14,4 +13,4 @@ class Admin(SQLModel, table=True):
     level_access: NiveauAccesEnum
     Id_user: int = Field(foreign_key="user.Id_user")
 
-    user: UserBase | None = Relationship(back_populates="user")
+    user: Optional["User"] = Relationship(back_populates="admin")
