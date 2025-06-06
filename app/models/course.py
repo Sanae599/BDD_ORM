@@ -15,6 +15,7 @@ class Course(SQLModel, table=True):
     description: Optional[str] = None
     start_date: datetime
     end_date: datetime
+    
     Id_room: int = Field(foreign_key="room.Id_room")
     max_capacity: int
     statut: CourseStatutEnum = Field(default=CourseStatutEnum.OPEN)
