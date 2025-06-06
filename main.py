@@ -1,19 +1,26 @@
-from sqlalchemy.sql import select
+from webapp.flask_manager import create_app
 from app.database import get_session, init_db
-from app.models.user import UserBase
 from app.crud.user import add_one_user
+from sqlalchemy.sql import select
+from app.models.user import UserBase
 
-# Initialise la base
-init_db()
+app = create_app()
 
-# Ajoute un utilisateur
-with get_session() as session:
-    user = add_one_user(session)
-    print(f"Utilisateur ajouté : {user.firstname} {user.lastname}")
 
-# Recherche d'un utilisateur
-with get_session() as session:
-    statement = select(UserBase).where(UserBase.firstname == "Rémi")
-    result = session.exec(statement).first()
+def startup_tasks():
+    init_db()
 
-print(f"Résultat : {result}")
+    with get_session() as session:
+        # Ajouter un utilisateur de test
+        user = add_one_user(session)
+        print(f"Utilisateur ajouté : {user.firstname} {user.lastname}")
+
+        # Rechercher un utilisateur
+        statement = select(UserBase).where(UserBase.firstname == "Rémi")
+        result = session.exec(statement).first()
+        print(f"Résultat : {result}")
+
+
+if __name__ == "__main__":
+    startup_tasks()
+    app.run(debug=True)

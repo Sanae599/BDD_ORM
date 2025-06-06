@@ -7,6 +7,7 @@ def add_one_user(session: Session):
         firstname="Rémi",
         lastname="LABONNE",
         email="remilabonne@yahoo.fr",
+        password="azerty",
         is_active=True,
         role=Role.APPRENANT,
     )
