@@ -1,8 +1,8 @@
 from datetime import date
 from typing import Dict, Optional
-from sqlmodel import SQLModel, Field, Relationship
-from user import UserBase
+from sqlmodel import SQLModel, Field, Relationship, Column, JSON
 from enum import Enum
+from sqlalchemy.ext.mutable import MutableDict
 
 class JobStaffEnum(str, Enum):
     ResponsablePedagogique = "Responsable pédagogique"
@@ -12,7 +12,7 @@ class TeachingStaff(SQLModel, table=True):
     Id_teaching_staff: int | None = Field(default=None, primary_key=True)
     job: JobStaffEnum 
     date_takingup_office: date 
-    responsabilities: Optional[Dict]
+    responsabilities: Dict = Field(default={}, sa_column=Column(MutableDict.as_mutable(JSON)))
     Id_user: int = Field(foreign_key="user.Id_user")
 
-    user: UserBase | None = Relationship(back_populates="user")
+    user: ["User"] = Relationship(back_populates="user")

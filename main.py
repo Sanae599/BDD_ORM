@@ -2,8 +2,9 @@ from webapp.flask_manager import create_app
 from app.database import get_session, init_db
 from app.crud.user import add_one_user
 from app.crud.course import create_one_course, get_all_courses
+from app.crud.room import create_one_room
 from sqlalchemy.sql import select
-from app.models.user import UserBase
+from app.models.user import User
 
 app = create_app()
 
@@ -16,17 +17,21 @@ def startup_tasks():
         print(f"Utilisateur ajouté : {user.firstname} {user.lastname}")
 
         # Rechercher un utilisateur
-        statement = select(UserBase).where(UserBase.firstname == "Rémi")
+        statement = select(User).where(User.firstname == "Rémi")
         result = session.exec(statement).first()
         print(f"Résultat : {result}")
 
-        #Add course test
-        course = create_one_course(session)
-        print(f"cours crée: {course.Id_course} {course.title}")
-
         #get all courses test
-        all_courses = get_all_courses(session)
-        print(all_courses)
+        #all_courses = get_all_courses(session)
+        #print(all_courses)
+
+        #Add room test
+        room = create_one_room(session)
+        print(room)
+
+        #Add course test
+        course = create_one_course(session, 1)
+
 
 
 if __name__ == "__main__":

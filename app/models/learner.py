@@ -2,7 +2,6 @@ from datetime import date, datetime
 from typing import Optional
 from enum import Enum
 from sqlmodel import SQLModel, Field, Relationship
-from user import UserBase
 
 class LearnerLevelEnum(str, Enum):
     BAC = "Bac"
@@ -18,4 +17,4 @@ class Learner(SQLModel, table=True):
     certification_obtained: Optional[str]
     Id_user: int = Field(foreign_key="user.Id_user")
 
-    user: UserBase | None = Relationship(back_populates="room")
+    user: Optional["User"] | None = Relationship(back_populates="room")
