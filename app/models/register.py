@@ -2,7 +2,7 @@ from datetime import datetime
 from typing import Optional
 from sqlmodel import Field, SQLModel, create_engine, Relationship
 from enum import Enum
-from course import Course
+from app.models.course import Course
 
 class RegisterStatutEnum(str, Enum):
     ENREGISTRE = "ENREGISTRE"

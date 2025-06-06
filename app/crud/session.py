@@ -18,7 +18,7 @@ with get_session() as session:
     session.commit()
 
 
-def manage_base()
+def manage_base():
     user = UserBase(
         firstname="Rémi",
         lastname="LABONNE",
@@ -26,7 +26,6 @@ def manage_base()
         is_active=True,
         role=Role.APPRENANT,
     )
-
 
 
 
