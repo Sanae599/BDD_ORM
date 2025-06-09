@@ -1,8 +1,7 @@
 from datetime import datetime
-from typing import Dict, Optional, List
-from sqlmodel import Field, SQLModel, create_engine, Column, JSON, Relationship
+from typing import Optional, List
+from sqlmodel import Field, SQLModel, Relationship
 from enum import Enum
-from app.models.room import Room
 
 class CourseStatutEnum(str, Enum):
     OPEN = "OPEN"
@@ -15,12 +14,9 @@ class Course(SQLModel, table=True):
     description: Optional[str] = None
     start_date: datetime
     end_date: datetime
-    
-    Id_room: int = Field(foreign_key="room.Id_room")
+    Id_room: Optional[int] = Field(foreign_key="room.Id_room")
     max_capacity: int
     statut: CourseStatutEnum = Field(default=CourseStatutEnum.OPEN)
-    prerequisites: Optional[Dict] = Field(default=None, sa_column=Column(JSON))
 
-    room: List[Room] | None = Relationship(back_populates="room")
-
-
+    room: Optional["Room"] = Relationship(back_populates="courses")
+    associates: List["Associate"] = Relationship(back_populates="course")

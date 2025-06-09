@@ -1,9 +1,8 @@
 from typing import Optional
-from sqlmodel import SQLModel, Field
+from sqlmodel import SQLModel, Field, Relationship
 from enum import Enum
 from sqlalchemy import Column, Enum as SQLEnum
 from flask_login import UserMixin
-
 
 class Role(Enum):
     APPRENANT = 0
@@ -11,9 +10,8 @@ class Role(Enum):
     STAFF = 2
     ADMIN = 3
 
-
-class UserBase(SQLModel, UserMixin, table=True):
-    id: Optional[int] = Field(default=None, primary_key=True)
+class User(SQLModel, UserMixin, table=True):
+    Id_user: Optional[int] = Field(default=None, primary_key=True)
     firstname: str
     lastname: str
     email: str
@@ -23,3 +21,5 @@ class UserBase(SQLModel, UserMixin, table=True):
 
     def get_id(self):
         return str(self.id)
+
+    admin: Optional["Admin"] = Relationship(back_populates="user")
