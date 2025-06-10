@@ -11,6 +11,10 @@ from app.enumerations.all_enumerations import (
     JobStaffEnum,
     LearnerLevelEnum,
 )
+from typing import TYPE_CHECKING
+
+if TYPE_CHECKING:
+    from app.models.lead import Lead
 
 
 class Password(SQLModel, table=True):
@@ -48,6 +52,7 @@ class Trainer(SQLModel, table=True):
     Id_user: int = Field(foreign_key="user.Id_user")
 
     user: Optional[User] = Relationship(back_populates="trainer")
+    lead: List["Lead"] = Relationship(back_populates="trainer")
 
 
 class Admin(SQLModel, table=True):

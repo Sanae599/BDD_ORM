@@ -2,6 +2,7 @@ from datetime import datetime
 from typing import Optional, List
 from sqlmodel import Field, SQLModel, Relationship
 from enum import Enum
+from app.models.lead import Lead
 
 
 class CourseStatutEnum(str, Enum):
@@ -23,8 +24,7 @@ class Course(SQLModel, table=True):
     room: Optional["Room"] = Relationship(back_populates="courses")
 
     associates: List["Associate"] = Relationship(back_populates="course")
-    lead: List["Associate"] = Relationship(back_populates="course")
+    lead: List["Lead"] = Relationship(back_populates="course")
 
 
     registers: list["Register"] = Relationship(back_populates="course")
-                     
