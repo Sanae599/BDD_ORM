@@ -13,8 +13,8 @@ class RegisterStatutEnum(str, Enum):
 
 
 class Register(SQLModel, table=True):
-    Id_course: int = Field(foreign_key="course.Id_course", primary_key=True)
-    Id_learner: int = Field(foreign_key="learner.Id_learner", primary_key=True)
+    id_course: int = Field(foreign_key="course.id_course", primary_key=True)
+    id_learner: int = Field(foreign_key="learner.id_learner", primary_key=True)
     registration_date: datetime = Field(default=datetime.now)
     registration_status: RegisterStatutEnum
     presence: Optional[bool]
