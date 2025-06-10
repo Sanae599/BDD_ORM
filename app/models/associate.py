@@ -8,3 +8,4 @@ class Associate(SQLModel, table=True):
 
     course: "Course" = Relationship(back_populates="associates")
     equipment: Optional["Equipment"] = Relationship(back_populates="associated_courses")
+                               

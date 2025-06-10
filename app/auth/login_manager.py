@@ -1,7 +1,8 @@
 # app/auth/login_manager.py
 
 from flask_login import LoginManager
-from app.models.user import User
+from app.models.tables_user import User
+# from app.enumerations.all_enumerations import User
 
 login_manager = LoginManager()
 
