@@ -2,7 +2,8 @@ from flask import Blueprint, request, redirect, url_for, render_template, flash
 from flask_login import login_user, login_required, logout_user, current_user
 from sqlalchemy.sql import select
 from app.database import get_session
-from app.models.user import User
+from app.models.tables_user import User, Password
+
 
 user_bp = Blueprint("user", __name__, url_prefix="/users")
 
@@ -11,19 +12,25 @@ user_bp = Blueprint("user", __name__, url_prefix="/users")
 def login():
     if request.method == "POST":
         email = request.form.get("email")
-        password = request.form.get("password")
+        pwd_input = request.form.get("password")
 
         with get_session() as session:
             statement = select(User).where(User.email == email)
-            user = (
-                session.exec(statement).scalars().first()
-            )  # Bien récupérer l'instance User
+            user: User = session.exec(statement).scalars().first()
 
-            if user and user.password == password:
-                login_user(user)
-                return redirect(url_for("user.profile"))
+            if user:
+                statement = select(Password).where(Password.id == user.id_password)
+                password_obj: Password = session.exec(statement).scalars().first()
 
+                if password_obj and password_obj.password == pwd_input:
+                    login_user(user)
+                    return redirect(url_for("user.profile"))
+
+            # Si mauvais mot de passe ou utilisateur inexistant
             flash("Identifiants incorrects")
+            return render_template("login.html")
+
+    # Requête GET : affichage du formulaire
     return render_template("login.html")
 
 

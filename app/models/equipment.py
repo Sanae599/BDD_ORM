@@ -24,4 +24,3 @@ class Equipment(SQLModel, table=True):
 
     room: Optional["Room"] = Relationship(back_populates="equipments")
     associated_courses: List["Associate"] = Relationship(back_populates="equipment")
-

@@ -1,15 +1,23 @@
-from app.models.user import User, Role
+from app.models.tables_user import User
+from app.enumerations.all_enumerations import Role
 from sqlmodel import Session
 
 
-def add_one_user(session: Session):
+def add_one_user(
+    session: Session,
+    firstname: str,
+    lastname: str,
+    email: str,
+    role: Role,
+    id_password: str,
+):
     user = User(
-        firstname="Rémi",
-        lastname="LABONNE",
-        email="remilabonne@yahoo.fr",
-        password="azerty",
+        firstname=firstname,
+        lastname=lastname,
+        email=email,
         is_active=True,
-        role=Role.APPRENANT,
+        role=role,
+        id_password=id_password,
     )
     session.add(user)
     session.commit()
