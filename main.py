@@ -4,8 +4,12 @@ from app.crud.user import add_one_user
 from app.crud.password import add_one_password
 from app.crud.room import add_one_room
 from app.crud.equipment import add_equipment_to_room
+from app.crud.learner import add_one_learner
 from app.models.equipment import EquipmentType
-from app.models.tables_user import User, Password
+from app.models.tables_user import User, Learner
+
+from app.schemas.user_schemas import UserCreate
+from app.schemas.course_schemas import CourseCreate
 
 from sqlalchemy.sql import select
 
@@ -18,46 +22,24 @@ def startup_tasks():
     init_db()
 
     with get_session() as session:
-        # Ajouter un utilisateur de test
-        # pwd: Password = add_one_password(session, "azerty")
-        user: User = add_one_user(
-            session, "remi", "labonne", "remi@labonne.com", Role.LEARNER, "azerty"
+        user_data = UserCreate(
+            firstname="remiiiiiiiiiiiiiiiii",
+            lastname="labonne",
+            email="remi@labonne.com",
+            password="Caaaaaaaaaaaaaaaaazerty&",
+            role=Role.LEARNER
         )
+
+        # Add the user to the database
+        user = add_one_user(session, user_data)
         print(f"Utilisateur ajouté : {user.firstname} {user.lastname}")
 
-        # # Rechercher un utilisateur
-        # statement = select(UserBase).where(UserBase.firstname == "Rémi")
-        # select_user = session.exec(statement).first()
-        # print(f"Résultat : {select_user}")
+        course_date = CourseCreate(
+            titre="titre du cours",
+            description="description du cours pas d'inspi",
+            date_debut=
 
-        # Ajout d'une salle
-        room = add_one_room(
-            session=session,
-            name="Salle test",
-            capacity=20,
-            location="Lille, Centre-ville"
         )
-        print(f"Salle créée : {room.name} (ID: {room.id_room})")
-
-        # Ajout équipements 
-        equipments = [
-            ("Projecteur", EquipmentType.AUDIOVISUAL, 1),
-            ("Tableau blanc", EquipmentType.FURNITURE, 1),
-            ("Ordinateurs", EquipmentType.COMPUTER, 5),
-            ("Chaises", EquipmentType.FURNITURE, 20)
-        ]
-
-        for desc, equip_type, quantity in equipments:
-            add_equipment_to_room(
-                session=session,
-                description=desc,
-                equipment_type=equip_type,
-                quantity=quantity,
-                id_room=room.id_room,
-                is_mobile=False
-            )
-
-        print(f"Équipements ajoutés à la salle {room.name}")
 
 
 if __name__ == "__main__":

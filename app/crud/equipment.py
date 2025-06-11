@@ -16,3 +16,4 @@ def add_equipment_to_room(session: Session, description: str, equipment_type: Eq
     session.commit()
     session.refresh(equipment)
     return equipment
+

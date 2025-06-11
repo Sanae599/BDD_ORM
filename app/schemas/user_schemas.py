@@ -19,8 +19,8 @@ class UserCreate(SQLModel):
         use_enum_values=True
     )
 
-    @field_validator("new_password")
-    def validate_new_password(cls, value: str) -> str:
+    @field_validator("password")
+    def validate_password(cls, value: str) -> str:
         if len(value) < 10:
             raise ValueError("Le mot de passe doit contenir au moins 10 caractères")
         if not any(c.isupper() for c in value):
@@ -31,7 +31,7 @@ class UserCreate(SQLModel):
 
 # Lecture publique d’un utilisateur (GET)
 class UserPublic(SQLModel):
-    Id_user: int
+    id_user: int
     firstname: str
     lastname: str
     email: EmailStr
