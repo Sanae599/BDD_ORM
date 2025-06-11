@@ -19,9 +19,9 @@ def startup_tasks():
 
     with get_session() as session:
         # Ajouter un utilisateur de test
-        pwd: Password = add_one_password(session, "azerty")
-        user: UserBase = add_one_user(
-            session, "remi", "labonne", "remi@labonne.com", Role.LEARNER, pwd.id
+        # pwd: Password = add_one_password(session, "azerty")
+        user: User = add_one_user(
+            session, "remi", "labonne", "remi@labonne.com", Role.LEARNER, "azerty"
         )
         print(f"Utilisateur ajouté : {user.firstname} {user.lastname}")
 

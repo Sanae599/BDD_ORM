@@ -9,7 +9,7 @@ def add_one_course(session: Session, title:str, description: str, start_date: st
     if existing_course:
         print('room déjà existante dans la db')
         return None
-        
+
     else:
         course = Course(
             title=title,
