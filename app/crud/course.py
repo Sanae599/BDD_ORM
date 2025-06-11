@@ -1,45 +1,58 @@
+from typing import Optional, List
 from datetime import datetime
 from sqlmodel import Session, select
 from app.models.course import CourseStatutEnum, Course
+from pydantic import ValidationError
 
-def add_one_course(session: Session, title:str, description: str, start_date: str,
-                       end_date: str, id_room: int, max_capacity: int):
-    # if not existe
-    existing_course = session.exec(select(Course).where(Course.title == title)).first()
+from app.schemas.course_schemas import CourseCreate, CourseRead, CourseUpdate
+
+def add_one_course(session: Session, course_data: CourseCreate):
+    existing_course = session.exec(select(Course).where(Course.title == course_data.titre)).first()
     if existing_course:
-        print('room déjà existante dans la db')
+        print('le cours existe déjà dans la db')
         return None
 
-    else:
-        course = Course(
-            title=title,
-            description=description,
-            start_date=datetime.strptime(start_date, "%Y-%m-%d"),
-            end_date=datetime.strptime(end_date, "%Y-%m-%d"),
-            id_room=id_room,
-            max_capacity=max_capacity,
-            statut=CourseStatutEnum.OPEN,
-        )
-        session.add(course)
-        session.commit()
-        session.refresh(course)
-        return course
+    course = Course(
+        title=course_data.titre,
+        description=course_data.description,
+        start_date=course_data.date_debut,
+        end_date=course_data.date_fin,
+        id_room=course_data.id_salle,
+        max_capacity=course_data.capacite_max,
+        statut=course_data.statut,
+    )
+    session.add(course)
+    session.commit()
+    session.refresh(course)
+    return CourseRead.model_validate(course)
 
-def get_one_course_by_id(session: Session, course_id: int):
+def get_one_course_by_id(session: Session, course_id: int) -> Optional[CourseRead]:
     statement = select(Course).where(Course.id_course == course_id)
     result = session.exec(statement)
-    return result.one()
+    course = result.one_or_none()
+    if course:
+        return CourseRead.model_validate(course)
+    return None
 
-def get_all_courses(session: Session):
+def get_all_courses(session: Session) -> List[CourseRead]:
     statement = select(Course)
     result = session.exec(statement)
-    return result.all()
+    courses = result.all()
+    return [CourseRead.model_validate(course) for course in courses]
 
+def update_course(session: Session, course_id: int, course_data: CourseUpdate) -> Optional[CourseRead]:
+    course = session.get(Course, course_id)
+    if not course:
+        return None
 
-def update_course(session: Session):
-    pass
+    for key, value in course_data.model_dump(exclude_unset=True).items():
+        setattr(course, key, value)
 
-def delete_course(session: Session, course_id: int):
+    session.commit()
+    session.refresh(course)
+    return CourseRead.model_validate(course)
+
+def delete_course(session: Session, course_id: int) -> bool:
     course = session.get(Course, course_id)
     if not course:
         return False

@@ -1,6 +1,6 @@
 from sqlmodel import SQLModel, create_engine, Session
 from app.models.course import Course
-from app.models.tables_user import User, Admin, Learner, TeachingStaff, Trainer
+from app.models.tables_user import UserBase, Admin, Learner, TeachingStaff, Trainer
 from app.models.room import Room
 
 # from app.models.admin import
