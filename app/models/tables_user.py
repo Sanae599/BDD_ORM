@@ -16,6 +16,7 @@ class UserBase(SQLModel):
     lastname: str
     email: str
     password: str
+    role: Role = Field(sa_column=SAColumn(SQLEnum(Role), default=Role.LEARNER))
 
 class Trainer(UserBase, table=True):
     # https://docs.sqlalchemy.org/en/20/orm/inheritance.html
