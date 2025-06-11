@@ -1,32 +1,45 @@
-from sqlmodel import SQLModel
-from typing import Optional
 from datetime import datetime
-from enum import Enum
-from pydantic import field_validator
-from app.enumerations.all_enumerations import RegisterStatus
+from typing import Optional
+from pydantic import BaseModel, ConfigDict, field_validator
+from app.enumerations.all_enumerations import RegistrationStatusEnum
 
-#Schéma de création d’une inscription (POST)
-class RegisterCreate(SQLModel):
+
+#Base commune
+class RegisterBase(BaseModel):
     id_learner: int
-    id_course: int
-    registration_date: Optional[datetime] = None  # auto si non fourni
-    status: RegisterStatus = RegisterStatus.ENREGISTRE
-    presence: Optional[bool] = None
-
-    @field_validator("registration_date")
-    def default_registration_date(cls, v):
-        return v or datetime.now()
-
-
-#Schéma de lecture d’une inscription (GET)
-class RegisterRead(RegisterCreate):
-    id_register: int  
-
-
-#Schéma de mise à jour partielle d’une inscription (PATCH)
-class RegisterUpdate(SQLModel):
-    id_learner: Optional[int] = None
-    id_course: Optional[int] = None
+    id_session: int
     registration_date: Optional[datetime] = None
-    status: Optional[RegisterStatus] = None
+    registration_status: RegistrationStatusEnum = RegistrationStatusEnum.EN_ATTENTE
     presence: Optional[bool] = None
+
+    model_config = ConfigDict(
+        validate_assignment=True,
+        use_enum_values=True
+    )
+
+
+#Création (POST)
+class RegisterCreate(RegisterBase):
+    pass
+
+
+#Lecture complète (GET)
+class RegisterRead(RegisterBase):
+    id: int
+
+
+#Lecture côté utilisateur
+class RegisterPublic(BaseModel):
+    registration_date: datetime
+    registration_status: RegistrationStatusEnum
+    presence: Optional[bool] = None
+
+    model_config = ConfigDict(use_enum_values=True)
+
+
+#Mise à jour (PATCH)
+class RegisterUpdate(BaseModel):
+    registration_status: Optional[RegistrationStatusEnum] = None
+    presence: Optional[bool] = None
+
+    model_config = ConfigDict(validate_assignment=True, use_enum_values=True)
