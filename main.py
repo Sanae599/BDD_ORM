@@ -34,13 +34,6 @@ def startup_tasks():
         user = add_one_user(session, user_data)
         print(f"Utilisateur ajouté : {user.firstname} {user.lastname}")
 
-        course_date = CourseCreate(
-            titre="titre du cours",
-            description="description du cours pas d'inspi",
-            date_debut=
-
-        )
-
 
 if __name__ == "__main__":
     startup_tasks()
