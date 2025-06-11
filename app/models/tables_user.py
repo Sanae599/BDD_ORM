@@ -1,5 +1,5 @@
 from typing import Optional, List, Dict
-from datetime import date, datetime
+from datetime import datetime, date, timezone
 from sqlmodel import SQLModel, Field, Relationship, Column, JSON
 from sqlalchemy.ext.mutable import MutableDict
 from sqlalchemy import Column as SAColumn, Enum as SQLEnum
@@ -10,14 +10,17 @@ from app.enumerations.all_enumerations import (
     JobStaffEnum,
     LearnerLevelEnum,
 )
+from sqlalchemy.sql import func
 
-class UserBase(SQLModel):
+class UserBase(SQLModel, table=False):
     firstname: str
     lastname: str
-    email: str
+    email: str = Field(unique=True)
     password: str
+    date_creation: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))    
     role: Role = Field(sa_column=SAColumn(SQLEnum(Role), default=Role.LEARNER))
-
+    is_active: Optional[bool] = True
+    
 class Trainer(UserBase, table=True):
     # https://docs.sqlalchemy.org/en/20/orm/inheritance.html
     # mapper args pour créer les tables enfants avec les champs de la table parent
@@ -55,14 +58,14 @@ class TeachingStaff(UserBase, table=True):
     def get_id(self):
         return self.id_staff
 
-class Learner(UserBase, table=True):
+class Learner(UserBase, SQLModel, table=True):
     __mapper_args__ = {'concrete': True}
     id_learner: Optional[int] = Field(default=None, primary_key=True)
     role: Role = Field(sa_column=SAColumn(SQLEnum(Role), default=Role.LEARNER))
     date_birth: date
     study_level: Optional[LearnerLevelEnum]
     phone_number: Optional[str]
-    platform_registration_date: datetime = Field(default_factory=datetime.now)
+    platform_registration_date: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
     certification_obtained: Optional[str]
 
     def get_id(self):
