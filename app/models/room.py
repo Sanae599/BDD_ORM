@@ -16,4 +16,3 @@ class Room(SQLModel, UserMixin, table=True):
 
     courses: List["Course"] = Relationship(back_populates="room")
     equipments: List["Equipment"] = Relationship(back_populates="room")
-                                  

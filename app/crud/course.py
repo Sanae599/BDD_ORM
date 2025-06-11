@@ -7,7 +7,7 @@ def create_one_course(session: Session, id_room: int):
     existing_course = session.exec(select(Course).where(Course.title == Course.title)).first()
     if existing_course:
         print('room déjà existante dans la db')
-        
+
     else:
         course = Course(
             title="tesstttttttttttt",

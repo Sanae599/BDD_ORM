@@ -21,7 +21,7 @@ class RoomCreate(SQLModel): #POST
 
 #Schéma de lecture de salle (GET)
 class RoomRead(RoomCreate):
-    id_room: int 
+    id_room: int
 
 
 #Mise à jour de salle #PATCH
