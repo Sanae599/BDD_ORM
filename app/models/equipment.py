@@ -1,7 +1,6 @@
 from typing import Optional, List
 from sqlmodel import SQLModel, Field, Relationship
-from enum import Enum
-
+from app.enumerations.all_enumerations import EquipmentType
 # Import local des modèles liés (type hints uniquement)
 from app.models.room import Room
 from app.models.associate import Associate
