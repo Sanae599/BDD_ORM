@@ -27,7 +27,7 @@ class Password(SQLModel, table=True):
 
 
 class User(SQLModel, UserMixin, table=True):
-    Id_user: Optional[int] = Field(default=None, primary_key=True)
+    id_user: Optional[int] = Field(default=None, primary_key=True)
     firstname: str
     lastname: str
     email: str
@@ -40,50 +40,50 @@ class User(SQLModel, UserMixin, table=True):
     teaching_staff: Optional["TeachingStaff"] = Relationship(back_populates="user")
 
     def get_id(self):
-        return str(self.Id_user)
+        return str(self.id_user)
 
 
 class Trainer(SQLModel, table=True):
-    Id_trainer: Optional[int] = Field(default=None, primary_key=True)
+    id_trainer: Optional[int] = Field(default=None, primary_key=True)
     speciality: str
     hire_date: date
     hourly_rate: float
     bio: Optional[str] = None
-    Id_user: int = Field(foreign_key="user.Id_user")
+    id_user: int = Field(foreign_key="user.id_user")
 
     user: Optional[User] = Relationship(back_populates="trainer")
     lead: List["Lead"] = Relationship(back_populates="trainer")
 
 
 class Admin(SQLModel, table=True):
-    Id_admin: Optional[int] = Field(default=None, primary_key=True)
+    id_admin: Optional[int] = Field(default=None, primary_key=True)
     date_promotion: date
     level_access: NiveauAccesEnum
-    Id_user: int = Field(foreign_key="user.Id_user")
+    id_user: int = Field(foreign_key="user.id_user")
 
     user: Optional[User] = Relationship(back_populates="admin")
 
 
 class TeachingStaff(SQLModel, table=True):
-    Id_teaching_staff: Optional[int] = Field(default=None, primary_key=True)
+    id_teaching_staff: Optional[int] = Field(default=None, primary_key=True)
     job: JobStaffEnum
     date_takingup_office: date
     responsabilities: Dict = Field(
         default={}, sa_column=Column(MutableDict.as_mutable(JSON))
     )
-    Id_user: int = Field(foreign_key="user.Id_user")
+    id_user: int = Field(foreign_key="user.id_user")
 
     user: Optional[User] = Relationship(back_populates="teaching_staff")
 
 
 class Learner(SQLModel, table=True):
-    Id_learner: int | None = Field(default=None, primary_key=True)
+    id_learner: int | None = Field(default=None, primary_key=True)
     date_birth: date
     study_level: Optional[LearnerLevelEnum]
     phone_number: Optional[str]
     platform_registration_date: datetime = Field(default=datetime.now())
     certification_obtained: Optional[str]
-    # Id_user: int = Field(foreign_key="user.Id_user")
+    #id_user: int = Field(foreign_key="user.id_user")
 
     # user: Optional["User"] | None = Relationship(back_populates="room")
 

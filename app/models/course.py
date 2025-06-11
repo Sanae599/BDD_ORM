@@ -12,12 +12,12 @@ class CourseStatutEnum(str, Enum):
 
 
 class Course(SQLModel, table=True):
-    Id_course: Optional[int] = Field(default=None, primary_key=True)
+    id_course: Optional[int] = Field(default=None, primary_key=True)
     title: str = Field(max_length=100)
     description: Optional[str] = None
     start_date: datetime
     end_date: datetime
-    Id_room: Optional[int] = Field(foreign_key="room.Id_room")
+    id_room: Optional[int] = Field(foreign_key="room.id_room")
     max_capacity: int
     statut: CourseStatutEnum = Field(default=CourseStatutEnum.OPEN)
 
