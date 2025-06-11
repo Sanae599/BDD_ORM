@@ -31,7 +31,7 @@ def login():
                     pwd_input, password_obj.password
                 ):
                     login_user(user)
-                    return redirect(url_for("user.profile"))  # ✅ redirection inchangée
+                    return redirect(url_for("user.profile"))  #  redirection inchangée
 
             flash("Identifiants incorrects")
 

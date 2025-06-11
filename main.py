@@ -1,6 +1,6 @@
 from webapp.flask_manager import create_app
 from app.database import get_session, init_db
-from app.crud.user import add_one_user
+from app.crud.user import add_one_user, add_n_user_fake
 from app.crud.password import add_one_password
 from app.models.tables_user import User, Password
 
@@ -20,6 +20,7 @@ def startup_tasks():
         user: User = add_one_user(
             session, "remi", "labonne", "remi@labonne.com", Role.LEARNER, "azerty"
         )
+        add_n_user_fake(session, 100)
         print(f"Utilisateur ajouté : {user.firstname} {user.lastname}")
 
         # # Rechercher un utilisateur

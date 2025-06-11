@@ -38,13 +38,14 @@ def add_one_user_fake(
 
     f = faker.Faker("fr_FR")
     pwd = add_one_password(session, f.password())
+    l_roles = [r.value for r in Role]
 
     user = User(
         firstname=f.first_name(),
         lastname=f.last_name(),
         email=f.email(),
         is_active=True,
-        role=choice(roles).value,
+        role=choice(l_roles),
         id_password=pwd.id,
     )
     session.add(user)
@@ -55,4 +56,4 @@ def add_one_user_fake(
 
 def add_n_user_fake(session: Session, n: int):
     for _ in range(n):
-        add_one_user
+        add_one_user_fake(session)
