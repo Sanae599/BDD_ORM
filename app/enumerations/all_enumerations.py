@@ -29,3 +29,14 @@ class LearnerLevelEnum(str, Enum):
     BAC = "Bac"
     BAC2 = "Bac+2"
     BAC5 = "Bac+5"
+
+class EquipmentType(str, Enum):
+    AUDIOVISUAL = "audiovisual"
+    COMPUTER = "computer"
+    FURNITURE = "furniture"
+    OTHER = "other"
+
+class RegisterStatus(str, Enum):
+    ENREGISTRE = "enregistre"
+    DESINSCRIT = "desinscrit"
+    EN_ATTENTE = "en_attente"
