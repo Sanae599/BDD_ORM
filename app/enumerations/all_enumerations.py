@@ -7,7 +7,11 @@ from enum import Enum
 #     STAFF = "admin"
 #     ADMIN = "staff"
 
-
+class CourseStatutEnum(str, Enum):
+    OPEN = "OPEN"
+    CLOSED = "CLOSED"
+    ARCHIVED = "ARCHIVED"
+    
 class Role(str, Enum):
     LEARNER = "learner"
     TRAINER = "trainer"
