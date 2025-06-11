@@ -6,12 +6,6 @@ from enum import Enum
 from app.models.room import Room
 from app.models.associate import Associate
 
-class EquipmentType(str, Enum):
-    AUDIOVISUAL = "audiovisual"
-    COMPUTER = "computer"
-    FURNITURE = "furniture"
-    OTHER = "other"
-
 class Equipment(SQLModel, table=True):
     id_equipment: Optional[int] = Field(default=None, primary_key=True)
     description: str
