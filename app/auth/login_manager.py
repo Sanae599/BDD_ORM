@@ -1,8 +1,8 @@
 # app/auth/login_manager.py
 
 from flask_login import LoginManager
-from app.models.tables_user import User
-# from app.enumerations.all_enumerations import User
+from app.models.tables_user import UserBase
+# from app.enumerations.all_enumerations import UserBase
 
 login_manager = LoginManager()
 
@@ -15,4 +15,4 @@ def init_login_manager(app):
         from app.database import get_session  # ✅ Import local pour éviter boucle
 
         with get_session() as session:
-            return session.get(User, int(user_id))
+            return session.get(UserBase, int(user_id))

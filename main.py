@@ -6,7 +6,7 @@ from app.crud.room import add_one_room
 from app.crud.equipment import add_equipment_to_room
 from app.crud.learner import add_one_learner
 from app.models.equipment import EquipmentType
-from app.models.tables_user import User, Learner
+from app.models.tables_user import UserBase, Learner
 
 from app.schemas.user_schemas import UserCreate
 from app.schemas.course_schemas import CourseCreate
