@@ -3,7 +3,6 @@ from typing import Optional, Dict
 from pydantic import field_validator
 from datetime import datetime
 
-
 #Créer la salle
 class RoomCreate(SQLModel): #POST
     nom: str
@@ -18,11 +17,9 @@ class RoomCreate(SQLModel): #POST
             raise ValueError("La capacité doit être au moins de 1")
         return value
 
-
 #Schéma de lecture de salle (GET)
 class RoomRead(RoomCreate):
     id_room: int
-
 
 #Mise à jour de salle #PATCH
 class RoomUpdate(SQLModel):
