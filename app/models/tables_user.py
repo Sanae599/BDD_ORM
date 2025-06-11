@@ -11,80 +11,59 @@ from app.enumerations.all_enumerations import (
     JobStaffEnum,
     LearnerLevelEnum,
 )
+
 from typing import TYPE_CHECKING
 
-if TYPE_CHECKING:
-    from app.models.lead import Lead
-
-
-class Password(SQLModel, table=True):
-    id: Optional[int] = Field(default=None, primary_key=True)
-    password: str
-    user: Optional["User"] = Relationship(back_populates="password")
-
-    def get_id(self):
-        return str(self.id)
-
-
-class User(SQLModel, UserMixin, table=True):
-    id_user: Optional[int] = Field(default=None, primary_key=True)
-    firstname: str
-    lastname: str
-    email: str
-    id_password: int = Field(foreign_key="password.id")
+if TYPE_CHECKING:                                     
+    from app.models.lead import Lead                  
+                                                      
+                                                      
+class UserBase(UserMixin):                            
+    firstname: str                                    
+    lastname: str                                     
+    email: str                                        
+    password: str                                     
     role: Role = Field(sa_column=SAColumn(SQLEnum(Role), default=Role.LEARNER))
 
-    password: Optional[Password] = Relationship(back_populates="user")
-    trainer: Optional["Trainer"] = Relationship(back_populates="user")
-    admin: Optional["Admin"] = Relationship(back_populates="user")
-    teaching_staff: Optional["TeachingStaff"] = Relationship(back_populates="user")
-
-    def get_id(self):
-        return str(self.id_user)
-
-
-class Trainer(SQLModel, table=True):
-    id_trainer: Optional[int] = Field(default=None, primary_key=True)
-    speciality: str
-    hire_date: date
-    hourly_rate: float
-    bio: Optional[str] = None
-    id_user: int = Field(foreign_key="user.id_user")
-
-    user: Optional[User] = Relationship(back_populates="trainer")
-    lead: List["Lead"] = Relationship(back_populates="trainer")
-
-
-class Admin(SQLModel, table=True):
-    id_admin: Optional[int] = Field(default=None, primary_key=True)
+class Trainer(SQLModel, UserBase, table=True):        
+    id: Optional[int] = Field(default=None, primary_key=True)
+    speciality: str                                   
+    hire_date: date                                   
+    hourly_rate: float                                
+    bio: Optional[str] = None                         
+                                                      
+    def get_id(self):                                 
+        return self.id                                
+                                                      
+                     
+class Admin(SQLModel, UserBase, table=True):
+    id: Optional[int] = Field(default=None, primary_key=True)
     date_promotion: date
     level_access: NiveauAccesEnum
-    id_user: int = Field(foreign_key="user.id_user")
-
-    user: Optional[User] = Relationship(back_populates="admin")
-
-
-class TeachingStaff(SQLModel, table=True):
-    id_teaching_staff: Optional[int] = Field(default=None, primary_key=True)
+                     
+    def get_id(self):
+        return self.id
+    
+class TeachingStaff(SQLModel, UserBase, table=True):
+    id: Optional[int] = Field(default=None, primary_key=True)
     job: JobStaffEnum
     date_takingup_office: date
     responsabilities: Dict = Field(
         default={}, sa_column=Column(MutableDict.as_mutable(JSON))
-    )
-    id_user: int = Field(foreign_key="user.id_user")
-
-    user: Optional[User] = Relationship(back_populates="teaching_staff")
-
-
-class Learner(SQLModel, table=True):
-    id_learner: int | None = Field(default=None, primary_key=True)
-    date_birth: date
+    )                
+                     
+    def get_id(self):
+        return self.id
+                              
+class Learner(SQLModel, UserBase, table=True):
+    id: Optional[int] = Field(default=None, primary_key=True)
+    date_birth: date                
     study_level: Optional[LearnerLevelEnum]
-    phone_number: Optional[str]
-    platform_registration_date: datetime = Field(default=datetime.now())
+    phone_number: Optional[str]     
+    platform_registration_date: datetime = Field(default_factory=datetime.now)
     certification_obtained: Optional[str]
-    #id_user: int = Field(foreign_key="user.id_user")
-
-    # user: Optional["User"] | None = Relationship(back_populates="room")
-
-    registers: list["Register"] = Relationship(back_populates="learner")
+                                    
+    def get_id(self):               
+        return str(self.id)         
+                                    
+    registers: List["Register"] = Relationship(back_populates="learner")
