@@ -43,7 +43,7 @@ class Admin(SQLModel, UserBase, table=True):
                      
     def get_id(self):
         return self.id
-    
+
 class TeachingStaff(SQLModel, UserBase, table=True):
     id: Optional[int] = Field(default=None, primary_key=True)
     job: JobStaffEnum
@@ -54,7 +54,8 @@ class TeachingStaff(SQLModel, UserBase, table=True):
                      
     def get_id(self):
         return self.id
-                              
+                 
+                 
 class Learner(SQLModel, UserBase, table=True):
     id: Optional[int] = Field(default=None, primary_key=True)
     date_birth: date                
