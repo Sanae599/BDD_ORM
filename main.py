@@ -1,27 +1,19 @@
 from webapp.flask_manager import create_app
 from app.database import get_session, init_db
-from app.crud.user import add_one_user
-from app.crud.room import add_one_room
-from app.crud.admin import add_one_admin
-
-from app.crud.equipment import add_equipment_to_room
 from app.crud.learner import add_one_learner
-from app.models.equipment import EquipmentType
-from app.models.tables_user import User, Learner
+from app.crud.admin import add_one_admin
+from app.crud.teaching_staff import add_one_teaching_staff
+from app.crud.trainer import add_one_trainer
 
-from app.schemas.user_schemas import UserCreate
-from app.schemas.course_schemas import CourseCreate
+from app.schemas.trainer_schemas import TrainerCreate
 from app.schemas.learner_schemas import LearnerCreate
-
+from app.schemas.teaching_staff_schemas import TeachingStaffCreate
 from app.schemas.admin_schemas import AdminCreate
-from app.enumerations.all_enumerations import NiveauAccesEnum
+from app.enumerations.all_enumerations import *
+from datetime import date
 
 
 
-from sqlalchemy.sql import select
-
-from app.enumerations.all_enumerations import Role, LearnerLevelEnum
-from datetime import date, datetime
 
 app = create_app()
 
@@ -30,6 +22,7 @@ def startup_tasks():
     init_db()
 
     with get_session() as session:
+        # Création d’un apprenant
         user_data = LearnerCreate(
             firstname="remiiiiiiiiiiiiiiiii",
             lastname="labonne",
@@ -46,9 +39,9 @@ def startup_tasks():
             print("Utilisateur ajouté :", user.email)
         except ValueError as e:
             print("Info :", e)
-            
-        # Ajout d'un administrateur
-        admin_data = AdminCreate(
+
+        # Premier administrateur
+        admin_data_1 = AdminCreate(
             firstname="Administrateur",
             lastname="Principal",
             email="admin@universite.fr",
@@ -58,54 +51,68 @@ def startup_tasks():
             level_access=NiveauAccesEnum.ADMIN_STANDARD
         )
         try:
-            admin = add_one_admin(session, admin_data)
-            if admin.email == admin_data.email and admin.id_admin is not None:
+            admin = add_one_admin(session, admin_data_1)
+            if admin.email == admin_data_1.email and admin.id_admin is not None:
                 print(f"Administrateur ajouté ou déjà présent : {admin.email}")
-
-
         except ValueError as e:
             print(f"Erreur : {e}")
+
+        # Deuxième administrateur
+        admin_data_2 = AdminCreate(
+            firstname="Benjamin",
+            lastname="Quinet",
+            email="benji@thebest.fr",
+            password="motdepasse123",
+            role=Role.ADMIN,
+            date_promotion=date(2023, 1, 1),
+            level_access=NiveauAccesEnum.SUPERADMIN
+        )
+        try:
+            admin = add_one_admin(session, admin_data_2)
+            if admin.email == admin_data_2.email and admin.id_admin is not None:
+                print(f"Administrateur ajouté ou déjà présent : {admin.email}")
+        except ValueError as e:
+            print(f"Erreur : {e}")
+
+        staff_data = TeachingStaffCreate(
+            firstname="Jean",
+            lastname="Professeur",
+            email="jean.prof@universite.fr",
+            password="strongpassword123",
+            role=Role.STAFF,
+            job=JobStaffEnum.ResponsablePedagogique,
+            date_takingup_office=date(2022, 9, 1),
+            responsabilities={"matière": "Mathématiques", "niveau": "Licence"}
+        )
+
+        try:
+            staff = add_one_teaching_staff(session, staff_data)
+            print(f"Personnel enseignant ajouté ou déjà présent : {staff.email}")
+        except ValueError as e:
+            print(f"Erreur TeachingStaff : {e}")
+
+
+
+        # Exemple de formateur
+        trainer_data = TrainerCreate(
+            firstname="Claire",
+            lastname="Durand",
+            email="claire.durand@formations.fr",
+            password="MotDePasseSecurise123",
+            role=Role.TRAINER,
+            speciality="Développement Web",
+            hire_date=date(2021, 10, 15),
+            hourly_rate=45.0,
+            bio="Claire est une formatrice passionnée spécialisée en Python et JavaScript."
+        )
+
+        try:
+            trainer = add_one_trainer(session, trainer_data)
+            print(f"Formateur ajouté ou déjà présent : {trainer.email}")
+        except ValueError as e:
+            print(f"Erreur Trainer : {e}")
 
 
 if __name__ == "__main__":
     startup_tasks()
     app.run(debug=True)
-
-# from webapp.flask_manager import create_app
-# from app.database import get_session, init_db
-# from app.crud.user import add_one_user
-# from app.crud.course import create_one_course, get_all_courses
-# from app.crud.room import create_one_room
-# from sqlalchemy.sql import select
-# from app.models.user import User
-
-# app = create_app()
-
-# def startup_tasks():
-#     init_db()
-
-#     with get_session() as session:
-#         # Ajouter un utilisateur de test
-#         user = add_one_user(session)
-#         print(f"Utilisateur ajouté : {user.firstname} {user.lastname}")
-
-#         # Rechercher un utilisateur
-#         statement = select(User).where(User.firstname == "Rémi")
-#         result = session.exec(statement).first()
-#         print(f"Résultat : {result}")
-
-#         #get all courses test
-#         #all_courses = get_all_courses(session)
-#         #print(all_courses)
-
-#         #Add room test
-#         room = create_one_room(session)
-#         print(room)
-
-#         #Add course test
-#         course = create_one_course(session, 1)
-
-
-# if __name__ == "__main__":
-#     startup_tasks()
-#     app.run(debug=True)
