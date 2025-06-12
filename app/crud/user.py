@@ -30,7 +30,7 @@ def get_one_user_by_id(session: Session, user_id: int):
     user = session.get(UserBase, user_id)
     if not user:
         return None
-    
+
     return UserPublic.model_validate(user)
 
 def update_user(session: Session, user_id: int, user_data: UserUpdate):
