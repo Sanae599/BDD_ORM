@@ -1,4 +1,4 @@
 #!/bin/bash
 source .venv/bin/activate
-rm database.db
+rm -f database.db
 python3 main.py

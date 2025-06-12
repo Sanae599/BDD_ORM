@@ -12,7 +12,6 @@ class Room(SQLModel, UserMixin, table=True):
     equipments: Dict = Field(
         default={}, sa_column=Column(MutableDict.as_mutable(JSON))
     )
-    is_active: bool = Field(default=True)
 
     courses: List["Course"] = Relationship(back_populates="room")
     equipments_rel: List["Equipment"] = Relationship(back_populates="room")

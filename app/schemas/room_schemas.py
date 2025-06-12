@@ -9,7 +9,7 @@ class RoomCreate(SQLModel): #POST
     capacite: int
     localisation: str
     equipements: Optional[Dict[str, str | bool | int]] = None  # JSON libre
-    is_active: bool = True
+
 
     @field_validator("capacite")
     def check_capacity(cls, value: int) -> int:
@@ -27,7 +27,7 @@ class RoomUpdate(SQLModel):
     capacite: Optional[int] = None
     localisation: Optional[str] = None
     equipements: Optional[Dict[str, str | bool | int]] = None
-    is_active: Optional[bool] = None
+
 
     @field_validator("capacite")
     def check_capacity(cls, value: Optional[int]) -> Optional[int]:
