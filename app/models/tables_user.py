@@ -28,7 +28,7 @@ class UserBase(SQLModel, Table=False):
     # is_active: Optional[bool] = True
 
 
-class User(UserBase, table=True):
+class User(UserBase, table=False):
     id_user: Optional[int] = Field(default=None, primary_key=True)
 
 

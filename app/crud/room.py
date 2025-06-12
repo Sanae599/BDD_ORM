@@ -1,17 +1,18 @@
 from sqlmodel import Session, select
 from app.models.room import Room
+from app.schemas.room_schemas import RoomCreate
 
-def add_one_room(session: Session, name: str, capacity: int, location: str, is_active:bool = True):
-    existing_room = session.exec(select(Room).where(Room.name == name)).first()
+def add_one_room(session: Session, rc: RoomCreate):
+    existing_room = session.exec(select(Room).where(Room.name == rc.nom)).first()
     if existing_room:
         print('room déjà existante dans la db')
         return existing_room
 
     room = Room(
-        name = name,
-        capacity = capacity,
-        location = location,
-        is_active= is_active
+        name = rc.nom,
+        capacity = rc.capacite,
+        location = rc.localisation,
+        is_active= rc.is_active
     )
     session.add(room)
     session.commit()

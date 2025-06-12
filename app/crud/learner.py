@@ -11,7 +11,7 @@ def add_one_learner(session: Session, cl: LearnerCreate):
         select(Learner).where(Learner.email == cl.email)
     ).first()
     if existing_learner:
-        print("room déjà existante dans la db")
+        print("learner déjà existante dans la db")
         return existing_learner
 
     else:

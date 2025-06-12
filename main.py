@@ -10,6 +10,7 @@ from app.models.tables_user import User, Learner
 from app.schemas.user_schemas import UserCreate
 from app.schemas.course_schemas import CourseCreate
 from app.schemas.learner_schemas import LearnerCreate
+from app.schemas.room_schemas import RoomCreate
 
 
 from sqlalchemy.sql import select
@@ -24,7 +25,7 @@ def startup_tasks():
     init_db()
 
     with get_session() as session:
-        user_data = LearnerCreate(
+        learner_data = LearnerCreate(
             firstname="remiiiiiiiiiiiiiiiii",
             lastname="labonne",
             email="remi@labonne2.com",
@@ -36,10 +37,24 @@ def startup_tasks():
             certification_obtained="CAPES",
         )
         try:
-            user = add_one_learner(session, user_data)
-            print("Utilisateur ajouté :", user.email)
+            learner = add_one_learner(session, learner_data)
+            print("Utilisateur ajouté :", learner.email)
         except ValueError as e:
             print("Info :", e)
+
+        room_data = RoomCreate(
+            nom = 'salle 1',
+            capacite = 50,
+            localisation= 'Lille',
+            is_active= True
+        )
+        try:
+            room = add_one_room(session, room_data)
+            print("room ajouté: {room.name}")
+        except ValueError as e:
+            print("Info:", e)
+
+        
 
 
 if __name__ == "__main__":
