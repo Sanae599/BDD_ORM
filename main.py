@@ -1,12 +1,11 @@
 from webapp.flask_manager import create_app
 from app.database import get_session, init_db
 from app.crud.user import add_one_user
-from app.crud.password import add_one_password
 from app.crud.room import add_one_room
 from app.crud.equipment import add_equipment_to_room
 from app.crud.learner import add_one_learner
 from app.models.equipment import EquipmentType
-from app.models.tables_user import UserBase, Learner
+from app.models.tables_user import User, Learner
 
 from app.schemas.user_schemas import UserCreate
 from app.schemas.course_schemas import CourseCreate
@@ -22,7 +21,7 @@ def startup_tasks():
     init_db()
 
     with get_session() as session:
-        user_data = UserCreate(
+        user_data = User(
             firstname="remiiiiiiiiiiiiiiiii",
             lastname="labonne",
             email="remi@labonne.com",

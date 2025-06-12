@@ -10,7 +10,7 @@ class UserCreate(SQLModel):
     firstname: constr(max_length=50)
     lastname: constr(max_length=50)
     email: EmailStr
-    password: str
+    password: str = None
     role: Role
     is_active: Optional[bool] = True
 

@@ -2,21 +2,19 @@ from app.models.tables_user import UserBase
 from app.enumerations.all_enumerations import Role
 from sqlmodel import Session, select
 from app.schemas.user_schemas import UserCreate, UserPublic, UserUpdate, PasswordUpdate, PasswordReset
-from app.crud.password import add_one_password
+
 
 def add_one_user(session: Session, user_data: UserCreate):
     validated_data = user_data.model_dump()
-
-    pwd = add_one_password(session, validated_data['password'])
 
     # créer user
     user = UserBase(
     firstname=validated_data['firstname'],
     lastname=validated_data['lastname'],
     email=validated_data['email'],
+    password=validated_data['password'],
     is_active=True,
     role=validated_data['role'],
-    id_password=pwd.id,
     )
 
     session.add(user)
