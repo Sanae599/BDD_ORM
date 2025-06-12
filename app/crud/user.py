@@ -1,4 +1,4 @@
-from app.models.tables_user import UserBase, User
+from app.models.tables_user import UserBase, User, Learner
 from app.enumerations.all_enumerations import Role
 from sqlmodel import Session, select
 from app.schemas.user_schemas import (
@@ -11,17 +11,26 @@ from app.schemas.user_schemas import (
 
 
 def add_one_user(session: Session, user_data: UserCreate):
+    existing_user = session.exec(
+        select(User).where(User.email == user_data.email)
+    ).first()
+    if existing_user:
+        raise ValueError(f"Un utilisateur avec l'email {user_data.email} existe déjà.")
+
     validated_data = user_data.model_dump()
 
-    # créer user
-    user = User(
-        firstname=validated_data["firstname"],
-        lastname=validated_data["lastname"],
-        email=validated_data["email"],
-        password=validated_data["password"],
-        is_active=True,
-        role=validated_data["role"],
-    )
+    if validated_data["role"] == Role.LEARNER:
+        # créer user
+        user = Learner(
+            firstname=validated_data["firstname"],
+            lastname=validated_data["lastname"],
+            email=validated_data["email"],
+            password=validated_data["password"],
+            # is_active=True,
+            role=validated_data["role"],
+        )
+    else:
+        print("il faut gérer les autres cas ...")
 
     session.add(user)
     session.commit()

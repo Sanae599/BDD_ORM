@@ -24,8 +24,8 @@ class UserBase(SQLModel, Table=False):
     email: str = Field(unique=True)
     password: str
     date_creation: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
-    role: Role = Field(sa_column=SAColumn(SQLEnum(Role), default=Role.LEARNER))
-    is_active: Optional[bool] = True
+    role: Role
+    # is_active: Optional[bool] = True
 
 
 class User(UserBase, table=True):
@@ -38,7 +38,6 @@ class Trainer(UserBase, table=True):
     hire_date: date
     hourly_rate: float
     bio: Optional[str] = None
-    role: Role = Field(sa_column=SAColumn(SQLEnum(Role), default=Role.TRAINER))
 
     courses: List["Course"] = Relationship(back_populates="trainer")
     leads: List["Lead"] = Relationship(back_populates="trainer")
@@ -51,7 +50,6 @@ class Admin(UserBase, table=True):
     id_admin: Optional[int] = Field(default=None, primary_key=True)
     date_promotion: date
     level_access: NiveauAccesEnum
-    role: Role = Field(sa_column=SAColumn(SQLEnum(Role), default=Role.TRAINER))
 
     def get_id(self):
         return self.id_admin
@@ -64,7 +62,6 @@ class TeachingStaff(UserBase, table=True):
     responsabilities: Dict = Field(
         default={}, sa_column=Column(MutableDict.as_mutable(JSON))
     )
-    role: Role = Field(sa_column=SAColumn(SQLEnum(Role), default=Role.TRAINER))
 
     def get_id(self):
         return self.id_teachingstaff
@@ -78,10 +75,6 @@ class Learner(UserBase, table=True):
     platform_registration_date: datetime = Field(
         default_factory=lambda: datetime.now(timezone.utc)
     )
-
-    phone_number: Optional[str]
-    platform_registration_date: datetime = Field(default_factory=datetime.now)
-    role: Role = Field(sa_column=SAColumn(SQLEnum(Role), default=Role.TRAINER))
 
     certification_obtained: Optional[str]
 
