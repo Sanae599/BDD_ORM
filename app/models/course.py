@@ -14,7 +14,7 @@ class Course(SQLModel, table=True):
     end_date: datetime
 
     id_room: Optional[int] = Field(foreign_key="room.id_room")
-    id_trainer: Optional[int] = Field(foreign_key="tables_users.trainer.id_trainer")
+    id_trainer: Optional[int] = Field(foreign_key="trainer.id_trainer")
 
     max_capacity: int
 
