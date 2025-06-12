@@ -1,6 +1,7 @@
-from datetime import date, datetime
+from datetime import date, datetime, timezone
 from typing import Optional, List, Dict
 from enum import Enum
+
 from sqlmodel import SQLModel, Field, Relationship, Column, JSON
 from sqlalchemy.ext.mutable import MutableDict
 from sqlalchemy import Column as SAColumn, Enum as SQLEnum
@@ -11,20 +12,23 @@ from app.enumerations.all_enumerations import (
     JobStaffEnum,
     LearnerLevelEnum,
 )
+from sqlalchemy.sql import func
 
+class UserBase(SQLModel, table=False):
+    firstname: str
+    lastname: str
+    email: str = Field(unique=True)
+    password: str
+    date_creation: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))    
+    role: Role = Field(sa_column=SAColumn(SQLEnum(Role), default=Role.LEARNER))
+    is_active: Optional[bool] = True
+    
 from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:                                     
     from app.models.lead import Lead                  
                                                       
                                                       
-class UserBase(UserMixin):                            
-    firstname: str                                    
-    lastname: str                                     
-    email: str                                        
-    password: str                                     
-    role: Role = Field(sa_column=SAColumn(SQLEnum(Role), default=Role.LEARNER))
-
 class Trainer(SQLModel, UserBase, table=True):        
     id_trainer: Optional[int] = Field(default=None, primary_key=True)
     speciality: str                                   
@@ -53,15 +57,18 @@ class TeachingStaff(SQLModel, UserBase, table=True):
     )                
                      
     def get_id(self):
-        return self.id_techingstaff
-                 
-                 
+
+                                 
 class Learner(SQLModel, UserBase, table=True):
     id_learner: Optional[int] = Field(default=None, primary_key=True)
     date_birth: date                
     study_level: Optional[LearnerLevelEnum]
+    phone_number: Optional[str]
+    platform_registration_date: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
+
     phone_number: Optional[str]     
     platform_registration_date: datetime = Field(default_factory=datetime.now)
+
     certification_obtained: Optional[str]
                                     
     def get_id(self):               
