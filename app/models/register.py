@@ -1,27 +1,18 @@
-from datetime import datetime
+from sqlmodel import SQLModel, Field, Relationship
 from typing import Optional
-from sqlmodel import Field, SQLModel, create_engine, Relationship
-from enum import Enum
-from app.models.course import Course
-from app.models.tables_user import Learner
-from app.enumerations.all_enumerations import RegisterStatutEnum
+from datetime import datetime, timezone
+from sqlalchemy import UniqueConstraint
+from app.enumerations.all_enumerations import RegistrationStatusEnum
+
 
 class Register(SQLModel, table=True):
-    id_course: int = Field(foreign_key="course.id_course", primary_key=True)
-    id_learner: int = Field(foreign_key="learner.id_learner", primary_key=True)
-    registration_date: datetime = Field(default=datetime.now)
-    registration_status: RegisterStatutEnum
-    presence: Optional[bool]
+    id_register: Optional[int] = Field(default=None, primary_key=True)
+    id_learner: int = Field(foreign_key="tables_users.learner.id_learner") 
+    id_course: int = Field(foreign_key="course.id_course")  #
+    registration_date: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
+    registration_status: RegistrationStatusEnum = Field(default=RegistrationStatusEnum.en_attente)
+    presence: Optional[bool] = None
 
-    # course: Course | None = Relationship(back_populates="course")
-    # learner: Learner | None = Relationship(back_populate="learner")
-    course: Course | None = Relationship(back_populates="registers")
-    learner: Learner | None = Relationship(back_populates="registers")
-
-
-sqlite_file_name = "database.db"
-sqlite_url = f"sqlite:///{sqlite_file_name}"
-
-engine = create_engine(sqlite_url, echo=True)
-
-#SQLModel.metadata.create_all(engine)
+    __table_args__ = (
+        UniqueConstraint("id_learner", "id_session"),
+    )

@@ -1,11 +1,11 @@
 from typing import Optional, List
 from datetime import datetime
-from pydantic import BaseModel, field_validator, ConfigDict
+from pydantic import BaseModel, field_validator, ConfigDict, constr
 from app.enumerations.all_enumerations import CourseStatutEnum
 
 #Schéma de création (POST)
 class CourseCreate(BaseModel):
-    title: str
+    titre: constr(max_length=100)
     description: Optional[str] = None
     start_date: datetime
     end_date: datetime
@@ -38,7 +38,7 @@ class CourseCreate(BaseModel):
 #Schéma de lecture complet (GET)
 class CourseRead(BaseModel):
     id: int
-    title: str
+    title: constr(max_length=100)
     description: Optional[str] = None
     start_date: datetime
     end_date: datetime
@@ -56,7 +56,7 @@ class CourseRead(BaseModel):
 
 #Schéma public pour l’interface utilisateur
 class CoursePublic(BaseModel):
-    title: str
+    title: constr(max_length=100)
     description: Optional[str] = None
     start_date: datetime
     end_date: datetime
@@ -70,7 +70,7 @@ class CoursePublic(BaseModel):
 
 #Schéma de mise à jour partielle (PATCH)
 class CourseUpdate(BaseModel):
-    title: Optional[str] = None
+    title: Optional[constr(max_length=100)] = None
     description: Optional[str] = None
     start_date: Optional[datetime] = None
     end_date: Optional[datetime] = None

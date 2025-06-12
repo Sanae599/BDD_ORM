@@ -40,6 +40,7 @@ class EquipmentType(str, Enum):
     FURNITURE = "furniture"
     OTHER = "other"
 
+
 class RegisterStatutEnum(str, Enum):
     ENREGISTRE = "enregistre"
     DESINSCRIT = "desinscrit"

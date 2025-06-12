@@ -1,17 +1,18 @@
 import re
 from typing import Optional
 from sqlmodel import SQLModel
-from pydantic import EmailStr, ConfigDict, field_validator
+from pydantic import EmailStr, ConfigDict, field_validator, constr
 from app.enumerations.all_enumerations import Role
-
+from datetime import datetime
 
 #Création d'un utilisateur (POST)
 class UserCreate(SQLModel):
-    firstname: str
-    lastname: str
+    firstname: constr(max_length=50)
+    lastname: constr(max_length=50)
     email: EmailStr
     password: str
     role: Role
+    is_active: Optional[bool] = True
 
     model_config = ConfigDict(
         str_strip_whitespace=True,
@@ -32,18 +33,19 @@ class UserCreate(SQLModel):
 # Lecture publique d’un utilisateur (GET)
 class UserPublic(SQLModel):
     id_user: int
-    firstname: str
-    lastname: str
+    firstname: constr(max_length=50)
+    lastname: constr(max_length=50)
     email: EmailStr
     role: Role
+    date_creation: datetime
 
-    model_config = ConfigDict(use_enum_values=True)
+    model_config = ConfigDict(str_strip_whitespace=True,use_enum_values=True)
 
 
 #Mise à jour d’un utilisateur (PATCH)
 class UserUpdate(SQLModel):
-    firstname: Optional[str] = None
-    lastname: Optional[str] = None
+    firstname:  Optional[constr(max_length=50)] = None
+    lastname:  Optional[constr(max_length=50)] = None
     email: Optional[EmailStr] = None
     role: Optional[Role] = None
 

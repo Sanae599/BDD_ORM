@@ -1,20 +1,26 @@
-from sqlmodel import SQLModel
-from typing import Optional
 from datetime import date
-from pydantic import field_validator, ConfigDict
+from typing import Optional
+from pydantic import BaseModel, EmailStr, ConfigDict, field_validator
+from app.enumerations.all_enumerations import Role
 
 
-# Schéma de création (POST)
-class TrainerCreate(SQLModel):
+# Base partagée (hérite implicitement de UserBase)
+class TrainerBase(BaseModel):
+    firstname: str
+    lastname: str
+    email: EmailStr
+    password: str
+    role: Role = Role.LEARNER  # ou Role.TRAINER si spécifique
+
     speciality: str
     hire_date: date
     hourly_rate: float
     bio: Optional[str] = None
-    Id_user: int
 
     model_config = ConfigDict(
         str_strip_whitespace=True,
-        validate_assignment=True
+        validate_assignment=True,
+        use_enum_values=True
     )
 
     @field_validator("hire_date")
@@ -30,36 +36,48 @@ class TrainerCreate(SQLModel):
         return value
 
 
-# Schéma public (GET normal)
-class TrainerPublic(SQLModel):
-    Id_trainer: int
+#Création (POST)
+class TrainerCreate(TrainerBase):
+    pass
+
+
+#Lecture complète (GET)
+class TrainerRead(TrainerBase):
+    id: int
+
+
+#Lecture publique (interface utilisateur)
+class TrainerPublic(BaseModel):
+    firstname: str
+    lastname: str
+    email: EmailStr
     speciality: str
     hire_date: date
     hourly_rate: float
-    bio: Optional[str] = None
 
     model_config = ConfigDict(
-        use_enum_values=True,
-        str_strip_whitespace=True
+        str_strip_whitespace=True,
+        use_enum_values=True
     )
 
 
-# Schéma de lecture pour usage interne (admin)
-class TrainerAdminRead(TrainerPublic):
-    Id_user: int
+#Mise à jour (PATCH)
+class TrainerUpdate(BaseModel):
+    firstname: Optional[str] = None
+    lastname: Optional[str] = None
+    email: Optional[EmailStr] = None
+    password: Optional[str] = None
+    role: Optional[Role] = None
 
-
-# Schéma de mise à jour (PATCH)
-class TrainerUpdate(SQLModel):
     speciality: Optional[str] = None
     hire_date: Optional[date] = None
     hourly_rate: Optional[float] = None
     bio: Optional[str] = None
-    Id_user: Optional[int] = None
 
     model_config = ConfigDict(
         str_strip_whitespace=True,
-        validate_assignment=True
+        validate_assignment=True,
+        use_enum_values=True
     )
 
     @field_validator("hire_date")

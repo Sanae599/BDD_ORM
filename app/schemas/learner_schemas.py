@@ -1,46 +1,90 @@
-from sqlmodel import SQLModel
-from typing import Optional
-from datetime import datetime, date
-from pydantic import field_validator
-from app.enumerations.all_enumerations import LearnerLevelEnum
 import re
+from datetime import date, datetime
+from typing import Optional
+from pydantic import BaseModel, EmailStr, ConfigDict, field_validator
+from app.enumerations.all_enumerations import Role, LearnerLevelEnum
 
-class LearnerCreate(SQLModel):
+
+#Base commune (non utilisée directement)
+class LearnerBase(BaseModel):
+    firstname: str
+    lastname: str
+    email: EmailStr
+    password: str
+    role: Role = Role.LEARNER
+
     date_birth: date
-    study_level: Optional[LearnerLevelEnum]
-    phone_number: Optional[str]
-    platform_registration_date: datetime = datetime.now()
-    certification_obtained: Optional[str]
-    Id_user: int 
+    study_level: Optional[LearnerLevelEnum] = None
+    phone_number: Optional[str] = None
+    certification_obtained: Optional[str] = None
+
+    model_config = ConfigDict(
+        str_strip_whitespace=True,
+        validate_assignment=True,
+        use_enum_values=True
+    )
 
     @field_validator("date_birth")
-    def validate_age(cls, value):
+    def validate_age(cls, value: date) -> date:
         age = (date.today() - value).days // 365
         if age < 16:
             raise ValueError("L'apprenant doit avoir au moins 16 ans")
         return value
 
     @field_validator("phone_number")
-    def validate_phone(cls, value):
-        if value:
-            #Dans notre cas numéro français : 10 chiffres, commence par 0
-            if not re.fullmatch(r"0\d{9}", value):
-                raise ValueError("Numéro de téléphone invalide")
+    def validate_phone(cls, value: Optional[str]) -> Optional[str]:
+        if value and not re.fullmatch(r"0\d{9}", value):
+            raise ValueError("Numéro de téléphone invalide")
         return value
 
-class LearnerRead(LearnerCreate):
-    Id_learner: int
 
-class LearnerUpdate(SQLModel):
+#Création (POST)
+class LearnerCreate(LearnerBase):
+    platform_registration_date: datetime = datetime.now()
+
+
+#Lecture complète (GET)
+class LearnerRead(LearnerBase):
+    id: int
+    platform_registration_date: datetime
+
+
+#Lecture publique pour le front
+class LearnerPublic(BaseModel):
+    firstname: str
+    lastname: str
+    email: EmailStr
+    study_level: Optional[LearnerLevelEnum] = None
+    certification_obtained: Optional[str] = None
+
+    model_config = ConfigDict(
+        str_strip_whitespace=True,
+        use_enum_values=True
+    )
+
+
+#Mise à jour partielle (PATCH)
+class LearnerUpdate(BaseModel):
+    firstname: Optional[str] = None
+    lastname: Optional[str] = None
+    email: Optional[EmailStr] = None
+    password: Optional[str] = None
+    role: Optional[Role] = None
+
     date_birth: Optional[date] = None
     study_level: Optional[LearnerLevelEnum] = None
     phone_number: Optional[str] = None
     platform_registration_date: Optional[datetime] = None
     certification_obtained: Optional[str] = None
-    Id_user: Optional[int] = None
+
+    model_config = ConfigDict(
+        str_strip_whitespace=True,
+        validate_assignment=True,
+        use_enum_values=True
+    )
 
     @field_validator("date_birth")
-    def validate_age(cls, value):
+    def validate_age(cls, value: Optional[date]) -> Optional[date]:
         if value:
             age = (date.today() - value).days // 365
             if age < 16:
@@ -48,8 +92,7 @@ class LearnerUpdate(SQLModel):
         return value
 
     @field_validator("phone_number")
-    def validate_phone(cls, value):
-        if value:
-            if not re.fullmatch(r"0\d{9}", value):
-                raise ValueError("Numéro de téléphone invalide")
+    def validate_phone(cls, value: Optional[str]) -> Optional[str]:
+        if value and not re.fullmatch(r"0\d{9}", value):
+            raise ValueError("Numéro de téléphone invalide (format attendu : 0XXXXXXXXX)")
         return value
