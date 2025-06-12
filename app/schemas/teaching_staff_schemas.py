@@ -1,38 +1,77 @@
-from sqlmodel import SQLModel
-from typing import Optional, Dict
 from datetime import date
-from pydantic import field_validator
-from app.enumerations.all_enumerations import JobStaffEnum
+from typing import Optional, Dict
+from pydantic import BaseModel, EmailStr, ConfigDict, field_validator
+from app.enumerations.all_enumerations import Role, JobStaffEnum
+
+
+#Base commune à toutes les variantes
+class TeachingStaffBase(BaseModel):
+    firstname: str
+    lastname: str
+    email: EmailStr
+    password: str
+    role: Role = Role.STAFF
+
+    job: JobStaffEnum
+    date_takingup_office: date
+    responsabilities: Dict = {}
+
+    model_config = ConfigDict(
+        str_strip_whitespace=True,
+        validate_assignment=True,
+        use_enum_values=True
+    )
+
+    @field_validator("date_takingup_office")
+    def check_not_future_date(cls, v: date) -> date:
+        if v > date.today():
+            raise ValueError("La date de prise de fonction ne peut pas être dans le futur")
+        return v
 
 
 #Création (POST)
-class TeachingStaffCreate(SQLModel):
+class TeachingStaffCreate(TeachingStaffBase):
+    pass
+
+
+#Lecture complète (GET)
+class TeachingStaffRead(TeachingStaffBase):
+    id: int
+
+
+#Lecture publique pour l’interface utilisateur
+class TeachingStaffPublic(BaseModel):
+    firstname: str
+    lastname: str
+    email: EmailStr
     job: JobStaffEnum
-    date_takingup_office: date
-    responsabilities: Optional[Dict] = {}
-    Id_user: int  # Clé étrangère vers la table user
 
-    @field_validator("date_takingup_office")
-    def validate_date(cls, value):
-        if value > date.today():
-            raise ValueError("La date de prise de fonction ne peut pas être dans le futur")
-        return value
+    model_config = ConfigDict(
+        str_strip_whitespace=True,
+        use_enum_values=True
+    )
 
 
-#Lecture (GET)
-class TeachingStaffRead(TeachingStaffCreate):
-    Id_teaching_staff: int
+#Mise à jour partielle (PATCH)
+class TeachingStaffUpdate(BaseModel):
+    firstname: Optional[str] = None
+    lastname: Optional[str] = None
+    email: Optional[EmailStr] = None
+    password: Optional[str] = None
+    role: Optional[Role] = None
 
-
-#Mise à jour (PATCH)
-class TeachingStaffUpdate(SQLModel):
     job: Optional[JobStaffEnum] = None
     date_takingup_office: Optional[date] = None
     responsabilities: Optional[Dict] = None
-    Id_user: Optional[int] = None
+
+    model_config = ConfigDict(
+        str_strip_whitespace=True,
+        validate_assignment=True,
+        use_enum_values=True
+    )
 
     @field_validator("date_takingup_office")
-    def validate_date(cls, value):
-        if value and value > date.today():
+    def check_not_future_update(cls, v: Optional[date]) -> Optional[date]:
+        if v and v > date.today():
             raise ValueError("La date de prise de fonction ne peut pas être dans le futur")
-        return value
+        return v
