@@ -6,4 +6,3 @@ from app.models.tables_user import UserBase
 from passlib.context import CryptContext
 
 user_bp = Blueprint("user", __name__, url_prefix="/users")
-

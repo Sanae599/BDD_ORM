@@ -12,6 +12,8 @@ if TYPE_CHECKING:
     from app.models.lead import Lead
     from app.models.register import Register
 
+if TYPE_CHECKING:
+    from app.models.lead import Lead
 class Course(SQLModel, table=True):
     id_course: Optional[int] = Field(default=None, primary_key=True)
     title: str = Field(max_length=100)
@@ -39,3 +41,4 @@ class Course(SQLModel, table=True):
     associates: List["Associate"] = Relationship(back_populates="course")
     registers: List["Register"] = Relationship(back_populates="course")
     leads: List["Lead"] = Relationship(back_populates="course")
+from app.models import lead
