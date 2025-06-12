@@ -11,7 +11,7 @@ class CourseStatutEnum(str, Enum):
     OPEN = "OPEN"
     CLOSED = "CLOSED"
     ARCHIVED = "ARCHIVED"
-    
+
 class Role(str, Enum):
     LEARNER = "learner"
     TRAINER = "trainer"
@@ -41,7 +41,7 @@ class EquipmentType(str, Enum):
     OTHER = "other"
 
 
-class RegisterStatutEnum(str, Enum):
+class RegistrationStatusEnum(str, Enum):
     ENREGISTRE = "enregistre"
     DESINSCRIT = "desinscrit"
     EN_ATTENTE = "en_attente"

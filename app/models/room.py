@@ -5,7 +5,7 @@ from flask_login import UserMixin
 
 
 class Room(SQLModel, UserMixin, table=True):
-    id: Optional[int] = Field(default=None, primary_key=True)
+    id_room: Optional[int] = Field(default=None, primary_key=True)
     name: str = Field(unique=True, index=True)
     capacity: int = Field(gt=0)  # ≥ 1, donc > 0
     location: str
@@ -16,3 +16,5 @@ class Room(SQLModel, UserMixin, table=True):
 
     courses: List["Course"] = Relationship(back_populates="room")
     equipments_rel: List["Equipment"] = Relationship(back_populates="room")
+
+    
