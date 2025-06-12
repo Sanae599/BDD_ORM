@@ -12,7 +12,6 @@ class UserCreate(SQLModel):
     email: EmailStr
     password: str = None
     role: Role
-    is_active: Optional[bool] = True
 
     model_config = ConfigDict(
         str_strip_whitespace=True,
