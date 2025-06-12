@@ -4,13 +4,7 @@ from sqlmodel import Field, SQLModel, create_engine, Relationship
 from enum import Enum
 from app.models.course import Course
 from app.models.tables_user import Learner
-
-
-class RegisterStatutEnum(str, Enum):
-    ENREGISTRE = "ENREGISTRE"
-    DESINSCRIT = "DESINSCRIT"
-    EN_ATTENTE = "EN_ATTENTE"
-
+from app.enumerations.all_enumerations import RegisterStatutEnum
 
 class Register(SQLModel, table=True):
     id_course: int = Field(foreign_key="course.id_course", primary_key=True)
@@ -30,4 +24,4 @@ sqlite_url = f"sqlite:///{sqlite_file_name}"
 
 engine = create_engine(sqlite_url, echo=True)
 
-SQLModel.metadata.create_all(engine)
+#SQLModel.metadata.create_all(engine)
