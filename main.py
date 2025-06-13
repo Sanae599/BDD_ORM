@@ -1,5 +1,5 @@
 import os
-from datetime import date
+from datetime import date, datetime, timezone
 
 from webapp.flask_manager import create_app
 
@@ -8,6 +8,11 @@ from app.crud.learner import add_one_learner
 from app.crud.admin import add_one_admin
 from app.crud.teaching_staff import add_one_teaching_staff
 from app.crud.trainer import add_one_trainer
+from app.crud.register import create_register, get_all_registers
+from app.crud.course import get_all_courses, add_one_course
+
+from app.schemas.register_schemas import RegisterCreate
+from app.schemas.course_schemas import CourseCreate
 
 from app.schemas.trainer_schemas import TrainerCreate
 from app.schemas.learner_schemas import LearnerCreate
@@ -119,6 +124,33 @@ def startup_tasks():
             print(f"Formateur ajouté ou déjà présent : {trainer.email}")
         except ValueError as e:
             print(f"Erreur Trainer : {e}")
+        
+        # course_data = CourseCreate(
+        #     title="Python pour débutants",
+        #     description="Découverte du langage Python",
+        #     start_date=datetime(2025, 7, 10, 9),
+        #     end_date=datetime(2025, 7, 14, 17),
+        #     id_room=None,  # 🟢 À adapter
+        #     id_trainer=1,  # 🟢 À adapter
+        #     max_capacity=15,
+        #     status=CourseStatutEnum.OPEN
+        # )
+
+        # course = add_one_course(session, course_data)
+        # if course:
+        #     print("✅ Cours ajouté :", course.title)
+        # else:
+        #     print("ℹ️ Le cours existe déjà ou erreur.")
+
+        #     new_register = RegisterCreate(
+        #     id_learner=1,
+        #     id_session=1,
+        #     registration_date=datetime.timezone(),
+        #     registration_status="EN_ATTENTE",
+        #     presence=False
+        #     )
+        #     register_record = create_register(session, new_register)
+        #     print("✅ Enregistrement ajouté :", register_record)
 
 # ✅ Exécution de l'application
 if __name__ == "__main__":

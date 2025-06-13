@@ -1,6 +1,6 @@
 from typing import Optional, List
 from datetime import datetime
-from pydantic import BaseModel, field_validator, ConfigDict, constr
+from pydantic import BaseModel, field_validator, ConfigDict, constr, ValidationInfo
 from app.enumerations.all_enumerations import CourseStatutEnum
 
 #Schéma de création (POST)
@@ -22,14 +22,14 @@ class CourseCreate(BaseModel):
     )
 
     @field_validator("end_date")
-    def check_dates(end_date, values):
-        start_date = values.get("start_date")
+    def check_dates(cls, end_date, info: ValidationInfo):
+        start_date = info.data.get("start_date")
         if start_date and end_date <= start_date:
             raise ValueError("La date de fin doit être après la date de début")
         return end_date
 
     @field_validator("max_capacity")
-    def check_capacity(value):
+    def check_capacity(cls, value):
         if value <= 0:
             raise ValueError("La capacité maximale doit être supérieure à zéro")
         return value

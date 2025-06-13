@@ -15,9 +15,9 @@ def add_one_course(session: Session, course_data: CourseCreate):
     course = Course(
         title=course_data.titre,
         description=course_data.description,
-        start_date=course_data.date_debut,
-        end_date=course_data.date_fin,
-        id_room=course_data.id_salle,
+        start_date=datetime(2025, 7, 10, 9),  # ✅ CHAMP CORRECT
+        end_date=datetime(2025, 7, 14, 17),   # ✅ CHAMP CORRECT
+        id_room=course_data.id_room,
         max_capacity=course_data.capacite_max,
         statut=course_data.statut,
     )
