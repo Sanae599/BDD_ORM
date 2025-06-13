@@ -17,7 +17,7 @@ def add_one_admin(session: Session, admin_data: AdminCreate) -> Admin:
             lastname=admin_data.lastname,
             email=admin_data.email,
             password=admin_data.password,
-            role=Role.ADMIN,
+            role=admin_data.role, # Role.ADMIN,
             date_promotion=admin_data.date_promotion,
             level_access=admin_data.level_access,
         )
