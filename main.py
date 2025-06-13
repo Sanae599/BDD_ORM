@@ -1,4 +1,8 @@
+import os
+from datetime import date
+
 from webapp.flask_manager import create_app
+
 from app.database import get_session, init_db
 from app.crud.learner import add_one_learner
 from app.crud.admin import add_one_admin
@@ -10,19 +14,26 @@ from app.schemas.learner_schemas import LearnerCreate
 from app.schemas.teaching_staff_schemas import TeachingStaffCreate
 from app.schemas.admin_schemas import AdminCreate
 from app.enumerations.all_enumerations import *
-from datetime import date
 
+# ✅ Imports des routes et login manager
+from app.routes.home_route import main_bp
+from app.routes.user_routes import user_bp
+from app.login_manager import init_login_manager
 
-
-
+# ✅ Création de l'app
 app = create_app()
 
+# ✅ Configuration des blueprints et du login manager
+# app.register_blueprint(main_bp)
+# app.register_blueprint(user_bp)
+init_login_manager(app)
 
+# ✅ Tâches à exécuter au démarrage
 def startup_tasks():
     init_db()
 
     with get_session() as session:
-        # Création d’un apprenant
+        # Apprenant
         user_data = LearnerCreate(
             firstname="remiiiiiiiiiiiiiiiii",
             lastname="labonne",
@@ -40,7 +51,7 @@ def startup_tasks():
         except ValueError as e:
             print("Info :", e)
 
-        # Premier administrateur
+        # Admin 1
         admin_data_1 = AdminCreate(
             firstname="Administrateur",
             lastname="Principal",
@@ -57,7 +68,7 @@ def startup_tasks():
         except ValueError as e:
             print(f"Erreur : {e}")
 
-        # Deuxième administrateur
+        # Admin 2
         admin_data_2 = AdminCreate(
             firstname="Benjamin",
             lastname="Quinet",
@@ -74,6 +85,7 @@ def startup_tasks():
         except ValueError as e:
             print(f"Erreur : {e}")
 
+        # Enseignant
         staff_data = TeachingStaffCreate(
             firstname="Jean",
             lastname="Professeur",
@@ -84,16 +96,13 @@ def startup_tasks():
             date_takingup_office=date(2022, 9, 1),
             responsabilities={"matière": "Mathématiques", "niveau": "Licence"}
         )
-
         try:
             staff = add_one_teaching_staff(session, staff_data)
             print(f"Personnel enseignant ajouté ou déjà présent : {staff.email}")
         except ValueError as e:
             print(f"Erreur TeachingStaff : {e}")
 
-
-
-        # Exemple de formateur
+        # Formateur
         trainer_data = TrainerCreate(
             firstname="Claire",
             lastname="Durand",
@@ -105,14 +114,13 @@ def startup_tasks():
             hourly_rate=45.0,
             bio="Claire est une formatrice passionnée spécialisée en Python et JavaScript."
         )
-
         try:
             trainer = add_one_trainer(session, trainer_data)
             print(f"Formateur ajouté ou déjà présent : {trainer.email}")
         except ValueError as e:
             print(f"Erreur Trainer : {e}")
 
-
+# ✅ Exécution de l'application
 if __name__ == "__main__":
     startup_tasks()
     app.run(debug=True)

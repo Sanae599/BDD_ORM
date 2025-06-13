@@ -1,3 +1,4 @@
+
 from flask import Flask
 import os
 from app.auth.login_manager import init_login_manager
@@ -10,7 +11,7 @@ def create_app():
     app.secret_key = "f6743107467a160afa96a573646a0d5c3e6d807d55329f65"
     # obtenu avec : os.urandom(24).hex()
 
-    init_db()
+    # init_db()
     init_login_manager(app)
 
     from app.routes.user_routes import user_bp
