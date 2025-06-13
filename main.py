@@ -46,7 +46,7 @@ def startup_tasks():
             certification_obtained="CAPES",
         )
         try:
-            learner = add_one_learner(session, learner_data)
+            learner = add_one_learner(session, user_data)
             print("Utilisateur ajouté :", learner.email)
         except ValueError as e:
             print("Info :", e)
